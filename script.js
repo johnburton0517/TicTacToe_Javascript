@@ -8,22 +8,33 @@ cells.forEach(cell => {
 let currentPlayer = 'X';
 
 function cellClicked(e) {
-    if (e.target.textContent !== ' ') {
-        alert('This cell is already filled');
-    }
 
-    else if (hasWinner === false) {
-        // Fill the cell with the current player X or O
-        e.target.textContent = currentPlayer;
+    // if gamemode has been selected
+    if (gameModeSelected === true) {
 
-        // Change the current player
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        if (e.target.textContent !== ' ') {
+            alert('This cell is already filled');
+        }
 
-        // Change the current player on game info
-        document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+        else if (hasWinner === false) {
+            // Fill the cell with the current player X or O
+            e.target.textContent = currentPlayer;
 
-        // Check if the game is over
-        checkWinner();
+            // Change the current player
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+
+            // Change the current player on game info
+            document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+
+            // Check if the game is over
+            checkWinner();
+
+            // if single player game
+            if (singlePlayer === true && currentPlayer === 'O' && hasWinner === false) {
+                // computer plays
+                computerPlay();
+            }
+        }
     }
 }
   
@@ -54,6 +65,14 @@ function checkWinner() {
             document.getElementById('current-player').textContent = `Player ${cells[a].textContent} won!`;
             break;
         }
+
+        // if there is no winner
+        else if (cells[0].textContent !== ' ' && cells[1].textContent !== ' ' && cells[2].textContent !== ' ' && cells[3].textContent !== ' ' && cells[4].textContent !== ' ' && cells[5].textContent !== ' ' && cells[6].textContent !== ' ' && cells[7].textContent !== ' ' && cells[8].textContent !== ' ') {
+            hasWinner = true;
+            document.getElementById('current-player').textContent = `It's a tie!`;
+            break;
+        }
+
         else {
             hasWinner = false;
         }
@@ -91,5 +110,57 @@ resetButton.addEventListener('click', () => {
     currentPlayer = 'X';
     document.getElementById('current-player').textContent = "Current Player: " + 'X';
     hasWinner = false;
+
+    // promt user to select gamemode
+    gameModeSelected = false;
+    document.getElementById("popup").style.display = "block";
 });
 
+// cant click on cells if gamemode has not been selected
+let gameModeSelected = false;
+
+// show popup when the page loads
+window.onload = function () {
+    document.getElementById("popup").style.display = "block";
+}
+
+// hide popup when the user clicks on the button
+function hidePopup() {
+    document.getElementById("popup").style.display = "none";
+    gameModeSelected = true;
+}
+
+// if single player button is clicked
+function singlePlayerButton() {
+    hidePopup();
+    singlePlayer = true;
+}
+
+// if two player button is clicked
+function twoPlayerButton() {
+    hidePopup();
+    singlePlayer = false;
+}
+
+// computer plays randomly
+function computerPlay () {
+
+    if (singlePlayer === true) {
+        // wait for 1 second before computer plays
+        setInterval(() => {
+            if (currentPlayer === 'O' && hasWinner === false) {
+                // randomly select a cell that is not filled
+                let randomCell = Math.floor(Math.random() * 9);
+                while (cells[randomCell].textContent !== ' ' && singlePlayer === true) {
+                    randomCell = Math.floor(Math.random() * 9);
+                }
+                if (singlePlayer === true) {
+                    cells[randomCell].textContent = currentPlayer;
+                    currentPlayer = 'X'
+                    document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+                    checkWinner();
+                }
+            }
+        }, 1000);
+    }
+}

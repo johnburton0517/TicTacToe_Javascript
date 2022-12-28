@@ -7,6 +7,17 @@
     <body>
         <h1 class="game-title" id="game-title">Tic Tac Toe</h1>
 
+        <!-- popup pront for single or mulitplayer -->
+        <div class="popup" id="popup">
+            <div class="popup-content">
+                <h2 class="popup-title">Choose Game Mode</h2>
+                <div class="popup-buttons">
+                    <button class="popup-button" id="single-player" onclick="singlePlayerButton()" >Single Player</button>
+                    <button class="popup-button" id="multi-player" onclick="twoPlayerButton()">Multi Player</button>
+                </div>
+            </div>
+        </div>
+
         <div class="game-board">
             <div class="cell" id="cell-1"> </div>
             <div class="cell" id="cell-2"> </div>
