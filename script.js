@@ -27,7 +27,7 @@ function cellClicked(e) {
             document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
 
             // Check if the game is over
-            checkWinner();
+            checkWinner(false);
 
             // if single player game
             if (singlePlayer === true && currentPlayer === 'O' && hasWinner === false) {
@@ -52,14 +52,16 @@ var winningCombinations = [
 var hasWinner = false;
 
 // check if there is a winner
-function checkWinner() {
+function checkWinner(checkingMove) {
     // winner if there is a match in the winning combinations
     for (let i = 0; i < winningCombinations.length; i++) {
         const [a, b, c] = winningCombinations[i];
         if (cells[a].textContent === cells[b].textContent && cells[b].textContent === cells[c].textContent && cells[a].textContent !== ' ') {
             hasWinner = true;
             // animateWinningCells();
-            animateWinningCells(a, b, c);
+            if (checkingMove === false) {
+                animateWinningCells(a, b, c);
+            }
 
             // change current-player to "Player X" or "Player O won"
             document.getElementById('current-player').textContent = `Player ${cells[a].textContent} won!`;
@@ -143,24 +145,80 @@ function twoPlayerButton() {
 }
 
 // computer plays randomly
-function computerPlay () {
+// function computerPlay () {
+//     if (singlePlayer === true) {
+//         // wait for 1 second before computer plays
+//         setInterval(() => {
+//             if (currentPlayer === 'O' && hasWinner === false) {
+//                 // randomly select a cell that is not filled
+//                 let randomCell = Math.floor(Math.random() * 9);
+//                 while (cells[randomCell].textContent !== ' ' && singlePlayer === true) {
+//                     randomCell = Math.floor(Math.random() * 9);
+//                 }
+//                 if (singlePlayer === true) {
+//                     cells[randomCell].textContent = currentPlayer;
+//                     currentPlayer = 'X'
+//                     document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+//                     checkWinner();
+//                 }
+//             }
+//         }, 1000);
+//     }
+// }
 
+// computer plays best move
+function computerPlay () {
     if (singlePlayer === true) {
-        // wait for 1 second before computer plays
-        setInterval(() => {
-            if (currentPlayer === 'O' && hasWinner === false) {
-                // randomly select a cell that is not filled
-                let randomCell = Math.floor(Math.random() * 9);
-                while (cells[randomCell].textContent !== ' ' && singlePlayer === true) {
-                    randomCell = Math.floor(Math.random() * 9);
-                }
-                if (singlePlayer === true) {
-                    cells[randomCell].textContent = currentPlayer;
-                    currentPlayer = 'X'
-                    document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
-                    checkWinner();
-                }
+        // look at the board and find what moves can be made
+        let availableMoves = [];
+        for (let i = 0; i < cells.length; i++) {
+            if (cells[i].textContent === ' ') {
+                availableMoves.push(i);
             }
-        }, 1000);
+        }
+
+        // console log the available moves
+        console.log(availableMoves);
+
+        // look at the available moves and find if there is a winning move
+        // if there is a winning move, make that move
+        for (let i = 0; i < availableMoves.length; i++) {
+            let move = availableMoves[i];
+            cells[move].textContent = currentPlayer;
+            checkingMove = true;
+            checkWinner(checkingMove);
+            if (hasWinner === true) {
+                cells[move].textContent = currentPlayer;
+                currentPlayer = 'X'
+                document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+                checkWinner(false);
+                return;
+            }
+            cells[move].textContent = ' ';
+        }
+        
+        // look at the available moves and find if there is a blocking move
+        // if there is a blocking move, make that move
+        for (let i = 0; i < availableMoves.length; i++) {
+            let move = availableMoves[i];
+            cells[move].textContent = 'X';
+            checkingMove = true;
+            checkWinner(checkingMove);
+            if (hasWinner === true) {
+                cells[move].textContent = currentPlayer;
+                currentPlayer = 'X'
+                document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+                checkWinner(false);
+                return;
+            }
+            cells[move].textContent = ' ';
+        }
+
+        // if there is no winning move or blocking move, make a random move
+        let randomCell = Math.floor(Math.random() * availableMoves.length);
+        cells[availableMoves[randomCell]].textContent = currentPlayer;
+        currentPlayer = 'X'
+        document.getElementById('current-player').textContent = "Current Player: " + currentPlayer;
+        checkWinner(false);
     }
 }
