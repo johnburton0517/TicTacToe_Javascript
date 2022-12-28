@@ -1,0 +1,47 @@
+
+body {
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.game-title {
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.game-board {
+    display: inline-grid;
+    grid-template-columns: auto auto auto;
+    background-color: grey;
+    padding: 10px;
+}
+
+.cell {
+    background-color: white;
+    border: 1px solid black;
+    padding: 30px;
+    font-size: 70px;
+    text-align: center;
+    height: 100px;
+    width: 100px;
+    cursor: pointer;
+}
+
+.game-info {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.game-info-button {
+  background-color: transparent;
+  border: 2px solid black;
+  border-radius: 16px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.green {
+    background-color: green;
+}
